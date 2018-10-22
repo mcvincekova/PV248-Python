@@ -82,16 +82,14 @@ def get_voices_for_print(cur, score_id):
 	            "WHERE score IS ? ", (score_id, ))
 	result_set = cur.fetchall()
 
-	voices = []
+	voices = {}
 	for row in result_set:
-		voice = {}
 		if row[0] is not None:
-			voice["voice"] = row[0]
+			voices[row[0]] = {}
 		if row[1] is not None:
-			voice["range"] = row[1]
+			voices[row[0]]["range"] = row[1]
 		if row[2] is not None:
-			voice["name"] = row[2]
-		voices.append(voice)
+			voices[row[0]]["name"] = row[2]
 
 	return voices
 
