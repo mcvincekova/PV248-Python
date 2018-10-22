@@ -1,5 +1,5 @@
 import sys
-from cv04 import database
+import database
 import json
 
 
