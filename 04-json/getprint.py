@@ -1,5 +1,5 @@
 import sys
-from cv04 import database
+import database
 import json
 
 
@@ -9,11 +9,11 @@ def get_connection(db_file):
 
 def run():
 	print_id = sys.argv[1]
-	conn = get_connection("scorelib.dat")
+	conn = get_connection("./scorelib.dat")
 
 	cur = conn.cursor()
 
-	cur.execute("SSELECT person.name, person.born, person.died "
+	cur.execute("SELECT person.name, person.born, person.died "
 	            "FROM print "
 	            "JOIN edition ON print.edition = edition.id "
 	            "Join score_author ON score_author.score = edition.score "

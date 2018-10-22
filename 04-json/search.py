@@ -127,13 +127,13 @@ def get_composer_print(cur, print_id):
 	com_composers = get_composers_for_print(cur, com_edition[0][0])
 
 	composer_print["Print Number"] = print_id
-	composer_print["Composers"] = com_composers
+	composer_print["Composer"] = com_composers
 	composer_print["Title"] = com_score[0][1]
 	composer_print["Genre"] = com_score[0][2]
 	composer_print["Key"] = com_score[0][3]
 	composer_print["Composition Year"] = com_score[0][5]
 	composer_print["Edition"] = com_edition[0][1]
-	composer_print["Editors"] = com_editors
+	composer_print["Editor"] = com_editors
 	composer_print["Voices"] = com_voices
 	composer_print["Partiture"] = com_print[0][0]
 	composer_print["Incipit"] = com_score[0][4]
@@ -143,7 +143,7 @@ def get_composer_print(cur, print_id):
 
 def run():
 	composer_string = ("%" + sys.argv[1] + "%")
-	conn = get_connection("scorelib.dat")
+	conn = get_connection("./scorelib.dat")
 	cur = conn.cursor()
 
 	# Get all composers whose name contains the given substring
