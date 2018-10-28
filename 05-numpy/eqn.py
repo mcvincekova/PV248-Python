@@ -3,6 +3,7 @@ import sys
 import re
 import copy
 
+# TODO add printing format
 
 def open_file(filename):
 	# fix opening on win - set encoding
@@ -56,6 +57,18 @@ def find_all_variables(line):
 			found_variables.add(char)
 
 	return found_variables
+
+
+def format_solution(variables, solution):
+	print("solution: ", end=" ")
+
+	output = []
+	variables.sort()
+	for i in range(len(variables)):
+		single_output = str(variables[i]) + " = " + str(solution[i])
+		output.append(single_output)
+
+	print(', '.join(output))
 
 
 def run():
@@ -114,7 +127,7 @@ def run():
 		if linalg.matrix_rank(left_sides_coefficients_matrix) == len(all_variables):
 			try:
 				solution = linalg.solve(left_sides_coefficients_matrix, results)
-				print(solution)
+				format_solution(list(all_variables), solution)
 			except Exception as e:
 				print(e)
 				return
