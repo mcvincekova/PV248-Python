@@ -3,7 +3,6 @@ import sys
 import re
 import copy
 
-# TODO add printing format
 
 def open_file(filename):
 	# fix opening on win - set encoding
@@ -81,7 +80,7 @@ def run():
 	for line in eq_file:
 		split_eq_sides = line.split("=")
 		full_left_sides.append(split_eq_sides[0].strip())
-		results.append(float(split_eq_sides[1].strip()))
+		results.append(float(split_eq_sides[1].replace(" ", "")))
 
 	# Find all variables used in the equation system
 	all_variables = set()
