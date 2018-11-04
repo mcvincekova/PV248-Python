@@ -19,31 +19,17 @@ def open_file(filename):
 
 
 def parse_line(line):
-	line = line.replace(" ", "")
+	tokens = line.split(" ")
 
 	eq_dict = {}
-	i = 0
-	while i <= len(line) - 1:
-		if line[i] == "+":
-			if line[i + 1].isdigit():
-				eq_dict[line[i + 2]] = float(line[i + 1])
-				i += 3
-			else:
-				eq_dict[line[i + 1]] = 1.0
-				i += 2
-		elif line[i] == "-":
-			if line[i + 1].isdigit():
-				eq_dict[line[i + 2]] = - float(line[i + 1])
-				i += 3
-			else:
-				eq_dict[line[i + 1]] = - 1.0
-				i += 2
-		elif line[i].isdigit():
-			eq_dict[line[i + 1]] = float(line[i])
-			i += 2
+	for token in tokens:
+		variable = re.findall(r"[a-z]+", token)
+		value = re.findall(r'\d*\.?\d+', token)
+
+		if "-" in token:
+			eq_dict[variable[0]] = -float(value[0])
 		else:
-			eq_dict[line[i]] = 1.0
-			i += 1
+			eq_dict[variable[0]] = float(value[0])
 
 	return eq_dict
 
