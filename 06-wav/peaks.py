@@ -1,4 +1,4 @@
-import numpy
+from numpy import fft, abs
 import wave
 import sys
 import struct
@@ -17,9 +17,10 @@ def unpack_data(parameter, current_frame):
 def read_data(filename, channels_num):
 
 	current_frame = filename.readframes(1)
-	unpacked_data = []
 
-	while current_frame is not None:
+	unpacked_data = []
+	# Read all frames (reads frames while possible, no None value)
+	while current_frame:
 		unpacked = unpack_data(channels_num, current_frame)
 		unpacked_data.append(unpacked)
 		current_frame = filename.readframes(1)
@@ -33,7 +34,7 @@ def get_fourier(data, window, position):
 	pos_to = (position + 1) * window
 	data_to_transform = data[pos_from:pos_to]
 
-	return numpy.fft.rfft(data_to_transform)
+	return fft.rfft(data_to_transform)
 
 
 def get_peaks(peaks):
@@ -63,7 +64,7 @@ def run():
 
 		amplitudes = []
 		for item in transform:
-			amplitudes.append(numpy.abs(item))
+			amplitudes.append(abs(item))
 
 		avg_amplitude = sum(amplitudes) / len(amplitudes)
 
@@ -82,5 +83,6 @@ def run():
 		print("low = " + str(peak_min) + ", high = " + str(peak_max))
 	else:
 		print("no peaks")
+
 
 run()
