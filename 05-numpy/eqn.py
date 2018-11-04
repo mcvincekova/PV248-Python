@@ -19,7 +19,8 @@ def open_file(filename):
 
 
 def parse_line(line):
-	tokens = line.split(" ")
+	line = line.replace(" ", "")
+	tokens = re.findall(r"[+|-]*[0-9]*[a-z]", line)
 
 	eq_dict = {}
 	for token in tokens:
@@ -27,9 +28,15 @@ def parse_line(line):
 		value = re.findall(r'\d*\.?\d+', token)
 
 		if "-" in token:
-			eq_dict[variable[0]] = -float(value[0])
+			if len(value) != 0:
+				eq_dict[variable[0]] = -float(value[0])
+			else:
+				eq_dict[variable[0]] = - 1.0
 		else:
-			eq_dict[variable[0]] = float(value[0])
+			if len(value) != 0:
+				eq_dict[variable[0]] = float(value[0])
+			else:
+				eq_dict[variable[0]] = 1.0
 
 	return eq_dict
 
@@ -110,12 +117,8 @@ def run():
 		# Check for the unique solution
 		# ... The solution is unique if and only if the rank equals the number of variables ...
 		if linalg.matrix_rank(left_sides_coefficients_matrix) == len(all_variables):
-			try:
-				solution = linalg.solve(left_sides_coefficients_matrix, results)
-				format_solution(list(all_variables), solution)
-			except Exception as e:
-				print(e)
-				return
+			solution = linalg.solve(left_sides_coefficients_matrix, results)
+			format_solution(list(all_variables), solution)
 		else:
 			# ... The general solution has k free parameters
 			# where k is the difference between the number of variables and the rank ...
