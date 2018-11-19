@@ -5,10 +5,9 @@ import json
 
 def group_and_remove(data_table, mode):
 	if mode == "dates":
-		data_table = data_table.rename(lambda column: column[:10], axis="columns")
-		# print(data_table)
+		data_table = data_table.rename(lambda column: column.strip()[:10], axis="columns")
 	elif mode == "exercises":
-		data_table = data_table.rename(lambda column: column[-2:], axis="columns")
+		data_table = data_table.rename(lambda column: column.strip()[-2:], axis="columns")
 	elif mode == "deadlines":
 		return data_table
 	else:
