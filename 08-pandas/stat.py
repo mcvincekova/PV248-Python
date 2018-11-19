@@ -8,12 +8,11 @@ def group_and_remove(data_table, mode):
 		data_table = data_table.rename(lambda column: column[:10], axis="columns")
 		# print(data_table)
 	elif mode == "exercises":
-		data_table = data_table.rename(lambda column: column[-4:], axis="columns")
+		data_table = data_table.rename(lambda column: column[-2:], axis="columns")
 	elif mode == "deadlines":
 		return data_table
 	else:
 		return None
-
 	# https://pandas.pydata.org/pandas-docs/version/0.18/groupby.html
 	data_table = data_table.groupby(level=0, axis=1).sum()
 
