@@ -4,6 +4,7 @@ from numpy import cumsum, median, mean
 from datetime import datetime
 import json
 import numpy
+from math import floor
 
 
 def group_and_remove(f, split_param):
@@ -52,11 +53,11 @@ def get_reg_slope(data_table, date_points):
 	y = numpy.array(cumulative_points)
 
 	degrees = [1]
-	matrix = numpy.stack([x**d for d in degrees], axis=1)
+	matrix = numpy.stack([x ** degree for degree in degrees], axis=1)
 	slope = numpy.linalg.lstsq(matrix, y, rcond=1)[0][0]
 
-	day_sixteen = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=(16.0 / slope))).strftime("%Y-%m-%d")
-	day_twenty = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=(20.0 / slope))).strftime("%Y-%m-%d")
+	day_sixteen = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=floor(16 / slope))).strftime("%Y-%m-%d")
+	day_twenty = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=floor(20 / slope))).strftime("%Y-%m-%d")
 
 	return slope, day_sixteen, day_twenty
 
