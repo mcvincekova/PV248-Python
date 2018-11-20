@@ -2,9 +2,8 @@ import sys
 import pandas
 from numpy import cumsum, median, mean
 from datetime import datetime
-from scipy.stats import linregress
-from math import ceil
 import json
+import numpy
 
 
 def group_and_remove(f, split_param):
@@ -41,20 +40,20 @@ def get_values(data_table, student_id):
 
 
 def get_reg_slope(data_table, date_points):
-	dates = []
+	dates_list = []
 	for date in data_table.columns.values:
 		date = datetime.strptime(date, "%Y-%m-%d")
-		dates.append(date)
-
-	dates_sorted = sorted(dates)
-
-	dates_numeric = []
-	for date in dates_sorted:
-		date = datetime.toordinal(date)
-		dates_numeric.append(date)
+		day = pandas.Timedelta(date - datetime.strptime("2018-09-17", "%Y-%m-%d")).days
+		dates_list.append(day)
 
 	cumulative_points = cumsum(date_points)
-	slope, intercept, r_value, p_value, std_deviation = linregress(dates_numeric, cumulative_points)
+
+	x = numpy.array(dates_list)
+	y = numpy.array(cumulative_points)
+
+	degrees = [1]
+	matrix = numpy.stack([x**d for d in degrees], axis=1)
+	slope = numpy.linalg.lstsq(matrix, y, rcond=1)[0][0]
 
 	day_sixteen = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=(16.0 / slope))).strftime("%Y-%m-%d")
 	day_twenty = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=(20.0 / slope))).strftime("%Y-%m-%d")
@@ -64,7 +63,7 @@ def get_reg_slope(data_table, date_points):
 
 def generate_output(points, slope, d_sixteen, d_twenty):
 	output = {"mean": mean(points), "median": median(points), "passed": count_passed(points), "total": sum(points),
-	          "slope": slope, "date 16": d_sixteen, "date 20": d_twenty}
+	          "regression slope": slope, "date 16": d_sixteen, "date 20": d_twenty}
 
 	return output
 
