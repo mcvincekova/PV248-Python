@@ -1,0 +1,81 @@
+﻿review od 433556 *0.5
+
+vela dobre mienenych rad a postrehov
+----------
+DU1 review:
+* Je dobrý zvyk hlavní logiku programu hodit do jedné funkce, která se může
+jmenovat např. main.
+* funkce open_file: Zanořený try-except blok není příliš dobrá volba.
+Předpokládám že encoding se vyskytuje v programu kvůli spouštení ve windows. Na
+linuxu může být klidně ecoding ponechán. (TL;DR řádky 12 až 15 nejsou IMO
+potřeba.
+* sys.arg argumenty je vhodné volat z jednoho místa. takto se může člověk
+ztratit v tom, jaké a kde se vůbec použily. Třeba open_file funkce by mohla
+potom vyžadovat parametr fileName.
+* Ve funkcích get_composers_stats a get_centuries_stats se vyskytuje opakující
+kod. Věřím že by ony opakujícíc řádky mohly být v separátní funkci kterou by
+ty
+ostatní volaly.
+* Obecně na spojování stringů je vhodné použít např
+"{}:{}".format(item.strip(), str(value)) 
+místo 
+item.strip() + ": " + str(value)
+navíc pokud, veškeré proměnné které chceme vypsat na jeden řádek, tak do funkce
+print můžeme tyto proměnné vložit, přičemž separator lze definovat
+vlastní.
+
+DU3 review:
+* VIZ stejné chyby jako v DU1
+* Chybí mi zavolání conn.close()
+* Všiml jsem si, že taháš data pomocí číselného indexu. Takový přístup dost
+silně spoléhá, že id je na 0 pozici. Při složitějším selectu se ti to může ale
+vymstít a je lepší použít data pomocí názvu sloupce
+to vše lze pomocí příkladu:
+conn = sqlite3.connect(CONNECTION_STRING)
+conn.row_factory = sqlite3.Row
+díky čemuž můžeš tzískávat data pomocí result["id"] místo result[0]
+* Nejsem si jistý zda "IS" v SQLite je podporováno
+* 
+cur.execute("SELECT ...")
+result_set = cur.fetchall()
+Takto to lze použít pokud voláš pouze jeden SELECT. V jiném případě je potřeba
+řádky spojit
+result_set = cur.execute("SELECT ...").fetchall()
+To samé platí i u pro fetchone().
+* Používáš-li break nebo continue, jeví to "code smell". Např. u
+is_score_in_db(řádek 117) by stačilo znegování podmínky. Samozřejmě použití
+continue/break v některých případech není špatně.
+* Řádek 126: Podmínka, která vyhledává takto specifický string nemůže být
+dobře. 
+* Pojmenované funkce s prefixem "is" nebo "has" nebo "are" bych předpokládal,
+že vrátí bool.
+* Řádek 56,73: Funce je zbytečně volána 2x. Je lepší vytvořit lokální
+proměnnou. Do databáze tímto přijde pouze jeden request.
+* def insert_print(cur, p): Nevyužitá roměnná print_id.
+* Myslím že defaultní hodnota partiture by měla být None a ne "N"
+* insert_person: místo 3 podmínek stačí pouze dvě, kdy by každá aktualizovala
+hodnotu pouze u born a pouze u died
+if author.born is not None:
+cur.execute("UPDATE person SET, died=? WHERE name=?", (author.born,
+author.name))
+elif author.died is not None:
+cur.execute("UPDATE person SET, died=? WHERE name=?", (author.died,
+author.name))
+* is_person_in_db: Jméno osoby je unikátní, proto postačí fetchone a případné
+iterace nejsou potřeba. - Tato informace ti může pročistit hodně kod, mnoho
+funkcí budou mít jednodušší 2-3 rádkovou logiku a dokonce některé nebudou vůbec
+potřeba.
+** are_persons_identical přeuspořádání podmínek se lze zbavit tolika
+opakujících return true/false
+** persons_loop: funci je těžké pochopit co dělá, je potřeba lepší
+naming
+
+DU5 review:
+* DU1 + DU3 chyby
+* Maličkost - importy je fajn mít seřazené podle abecedy
+* Funkce run by se ještě dala rozdělit. bloky a komentáře, které si vyznačila,
+nepřímo značí, kde by se dala funkcionalita rozseknout :)
+* Chytré využití "copy"
+* format_solution: zbytečné dvojíté volání funkce print, postačilo něco jako
+print("solution: {}".format(', '.join(output)))
+* Overall tento kod je zdařilý a nenašel jsem příliš co vytknout
