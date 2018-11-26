@@ -56,8 +56,12 @@ def get_reg_slope(data_table, date_points):
 	matrix = numpy.stack([x ** degree for degree in degrees], axis=1)
 	slope = numpy.linalg.lstsq(matrix, y, rcond=1)[0][0]
 
-	day_sixteen = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=floor(16 / slope))).strftime("%Y-%m-%d")
-	day_twenty = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=floor(20 / slope))).strftime("%Y-%m-%d")
+	if slope == 0:
+		day_sixteen = "inf"
+		day_twenty = "inf"
+	else:
+		day_sixteen = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=floor(16 / slope))).strftime("%Y-%m-%d")
+		day_twenty = (datetime.strptime("2018-09-17", "%Y-%m-%d") + pandas.Timedelta(days=floor(20 / slope))).strftime("%Y-%m-%d")
 
 	return slope, day_sixteen, day_twenty
 
