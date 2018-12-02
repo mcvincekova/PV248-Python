@@ -17,6 +17,14 @@ path_param = "/"
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
 	@staticmethod
+	def get_headers_dict(headers):
+		headers_dict = {}
+		for header in headers.items():
+			headers_dict[header[0]] = header[1]
+
+		return headers_dict
+
+	@staticmethod
 	def check_valid_url(url_to_check):
 		try:
 			req = urllib.request.Request(url_to_check)
@@ -41,10 +49,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 
 	@staticmethod
 	def form_request_url(up_url, path):
-		# https: // docs.python.org / 3 / library / urllib.parse.html
-		if path_param in up_url:
-			host = urllib.parse.urlparse(up_url)[1]
-		host = up_url
+		# https://docs.python.org/3/library/urllib.parse.html
+		host = urllib.parse.urlparse(up_url)[1] if path_param in up_url else up_url
 
 		return schema + host + path
 
@@ -72,7 +78,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 			else:
 				self.handle_error(None)
 			return None
-		# hell yea timeouts, timeout everywhere -> add socket timeout
+		# hell yea timeouts, timeouts everywhere -> add socket timeout
 		# http://devmartin.com/blog/2015/02/fun-with-urlerror-socket.timeout-and-pythons-urlopen.../
 		except socket.timeout:
 			self.handle_timeout()
@@ -106,11 +112,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 		r_headers = response[1]
 		r_content = response[2]
 
-		headers_dict = {}
-		for header in r_headers.items():
-			headers_dict[header[0]] = header[1]
-
-		output = {"headers": headers_dict,
+		headers = self.get_headers_dict(r_headers)
+		output = {"headers": headers,
 		          "code": r_code}
 
 		response_content = self.get_json(r_content)
