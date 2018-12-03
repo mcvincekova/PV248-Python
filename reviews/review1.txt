@@ -1,6 +1,12 @@
 ﻿review od 433556 *0.5
 
-vela dobre mienenych rad a postrehov
+/komentar/
+Vela dobre mienenych rad a postrehov.
+Pre mna velmi uzitocne review predovsetkym smerom k hw03, ktora je napisana priserne
+a bolo prinosne pozriet si, co vsetko by malo byt inak s pohladu dalsieho cloveka.
+Vytknutie chyb / stylu na konkretnych pripadoch a riadkoch.
+
+/samotne review/
 ----------
 DU1 review:
 * Je dobrý zvyk hlavní logiku programu hodit do jedné funkce, která se může

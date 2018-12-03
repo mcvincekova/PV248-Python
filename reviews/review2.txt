@@ -1,0 +1,99 @@
+review od 479068 *0.5
+
+/komentar/
+Tieto ulohy mi presli, chcela som teda primarne pocut nazor na styl, ktorym su napisane.
+(pretoze z mojho subjektivneho hladiska patria medzi to najmenej priserne, co moje ulohy v tomto kurze ponukaju)
+Beriem si k srdcu predovsetkym dve poznamky: 
+-> zavadzajuce nazvy premennych a metod. Pri s5nom pohlade na ten kod je to pomerne zrejme
+-> priserne obalovanie funkcionality a posielanie parametra "cur" cez X funkcii, co zas a znova, je pri 
+ohliadnuti sa za tym kodom pomerne do oci bijuce
+/samotne review/
+
+
+Legenda
++ kladné reakce
+- reakce k zamyšlení (ne nutne negativní, nekteré veci mohou být dosti individuální)
+
+------------------------------
+HW 06 - FFT
+------------------------------
+
+Testy
+---------------
++ všechny mé testy prošly bez problému
+
+Hodnocení kódu
+---------------
+- výskyt promenných s jedním písmenem
+    1) "for j, amplitude in enumerate(amplitudes):" -> na první pohled není srozumitelné, co bude promenná j obsahovat
+- nadbytecné komentáre
+    1)  # get number of frames          -> název funkce má stejnou vypovídající hodnotu jako komentár nad jejím voláním
+	    frames_num = f.getnframes()
+    2)  # get sampling frequency        -> obdobné
+	    window = f.getframerate()
+- magické konstanty
+    1) "if amplitude >= 20 * avg_amplitude:" -> z 20 udelat konstantu s patricným pojmenováním
+
+
+
+------------------------------
+HW 01 - Stats
+------------------------------
+
+Testy
+---------------
++ všechny mé testy prošly bez problému
+
+Hodnocení kódu
+---------------
+- výskyt promenných s jedním písmenem
+    1) zde se to týká pouze f -> file, p -> pattern, tedy je to spíše minoritní (a individuální) záležitost
+- opakování kódu v metodách `get_composers_stats` a `get_centuries_stats`
+    1) pro pripravení regulárního výrazu a iterování souboru by šla využít pouze jedna metoda a kód rozvetvit až pro zpracování jednoho rádku
+- není vhodné chytat generic exception ale specifikovat konkrétní typ
+    1) except Exception as e: (r10)
+    2) except Exception as e: (r14)
+
+
+
+------------------------------
+HW 04 - Search from DB
+------------------------------
+
+Testy
+---------------
++ všechny mé testy prošly bez problému
+
+Hodnocení kódu
+---------------
+Obecne
+database.py
+- identifikátor `create_db` je zavádející
+- v této úloze jsme pouze fetchovali data z DB, tedy zapnutí checkování cizích klícu se zdá býti zbytecné (r13)
+getprint.py
++ není co vytknout, elegantne rešené: jeden select, zparsování, výpis
+search.py
+- funkce `get_connection` je zde opet definovana (stejne jako v getprint.py) a jen obaluje volani nevhodne pojmenovane `create_db`
+    -> prejmenovat `create_db` na `get_connection`, smazat definice, `get_connection` ze getprint.py a search.py a volat primo prejmenovanou metodu z `database.py`
+- parametr `cur` je predáván témer do každé funkce v rámci modulu, urcite by šlo úlohu dekomponovat lépe
+- cur.execute a cur.fetchall by bylo vhodne obalit do nejake metody a tu metodu extrahovat do database.py modulu
+- identifikator `get_print_for_print` je zavadejici
+    -> rename `get_print_model_for_print_id` nebo treba `get_print_by_id`, cokoliv v tomto duchu
+
+
+
+------------------------------
+HW * - Spolecne pro všechny
+------------------------------
++ dodržování jmenných konvencí a jejich konzistence ve všech zdrojových kódech (PEP 8)
++ kód se velmi lehce cte
+- volání top-lvl `run` bych podmínil `if __name__ == "__main__":`
+    -> pri prípadné další modularizaci to muže predejít nechtené implicitní invokaci pri importování danného modulu
+
+
+
+------------------------------
+Záver
+------------------------------
+Všechny vypsané chyby se týkají spíše stylu, jelikož jsem neshledal v žádné z trech úloh žádné sémantické problémy, byt jsem se o to snažil.
+Ošetrování validity vstupu prográmku / skriptu jsem nijak nehodnotil, jelikož bylo vždy uvedeno, že se na vstupech vyskyutnou pouze validní data, navíc z povahy týdeních iterací není reálné ošetrit veškeré chybové vstupy.
