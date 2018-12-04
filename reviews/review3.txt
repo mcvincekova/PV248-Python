@@ -1,0 +1,31 @@
+review od 410247 *0.5
+
+/komentar/
+Z tohot review mam niekolko zaujimavych poznantkov:
+-> je zaujimave, ze v tomto review bola preferovana linearita kodu oproti niektoremu cleneniu na funkcie.
+Hoci osobne preferujem vyclenovat funkcionalitu do separatnych metod / funckii (aj ked vacsina mojich uloh tak nevyzera),
+je mozno dobre sa v buducnosti zamysliet, ci je ta trojriadkova funkcia vazne nevyhnutna
+-> cenim si odporucenie na kontrolu datovych typov v hw02 (je dost pravdepodobne, ze je to realny dovod jej nefunkcnosti)
+-> zaujala ma aj poznamka o jednoduchych if conditions pisanych na jeden riadok -> zakomponovala som to do dvoch svojich dalsich uloh,
+osobne mam pocit, ze pre mna to trochu zhorsuje citatelnost, ale mozno je to len otazka zvyku a chcela som to skusit
+
+/samotne review/
+
+
+První cvičení
+Obecně vzato je kód dobře a nekomplikovaně členěný, plně dostačujícím způsobem vzhledem k potřebám zadání. To bylo poměrně nenáročné, proto je celý kód členěný pouze do třech funkcí, které poskytují veškerou funkcionalitu.
+Jediná výtka se týká přehlednosti kódu, kdy podobně jako ve druhém úkolu je i zde ve funkci get_centuries_stats použito několik vnořených podmínek, které neprospívají rychlému pochopení kódu. 
+Pro mód composer nebyly zjištěný žádné nedostatky, výstup se zdá být korektní. V módu century není výstup zcela korektní pro dvacáté první století. Respektive korektní je množství „pieces“ pro dané století, nicméně výstup není korektní vzhledem k anglickému jazyku, kdy bych očekával spíše „21st century“ a ne „21th century“. 
+Kromě těchto několika drobností jsem na nic závažnějšího nenarazil a to ani z hlediska optimalizace kódu.
+
+Druhé cvičení
+Nalezl jsem jeden rozdíl zásadního charakteru oproti zadání.  Ve zkratce – všechny osoby, ať už jsou to autoři composition nebo edition – by měly být instance třídy person. Ne ve všech z těchto případů tomu tak opravdu je. Doporučil bych kontrolu datových typů autorů pro edition pro vstupy v původním textovém souboru, jelikož se zdá, že jsou v tomto případě vedeny jako list of strings.
+Při porovnání samotných výstupů s mými, které testy prošly, jsem nenašel výraznější rozdíly. Pokud tedy existují další chyby, kterých jsem ji nevšiml, nebudou se pravděpodobně týkat výstupů programu, nýbrž spíše reprezentace dat.
+Samotný kód je poměrně dlouhý. Je to spíše dáno snahou o zachycení všech možných nepravidelností ve vstupu a jeho členěním, jelikož je použito mnoho funkcí, které řádky kódu vždy o něco rozšíří. Osobně bych možná doporučil nevytvářet funkce, které řeší poměrně triviální úlohy, obsahují jen několik málo řádků a jsou volány jednou (např. extract_year), protože při jejich vyšším množství kód poněkud bobtná a zesložiťuje to jeho pochopení.
+Stejně tak by z hlediska přehlednosti bylo vhodnější podmínky, které obsahují pouze jeden „then statement“ psát na jeden řádek. Jelikož je jich v kódu značné množství, opět právě pro zachycení nejrůznějších výjimek, dosáhlo by se tím jeho výraznější kompaktnosti. Popřípadě se nabízí možnost kód přepracovat a použít generator expressiosn. 
+Podobná myšlenka platí i pro např. čtyři vnořené podmínky ve funkci extract_composers, které by si zasloužily refactoring. Obecně vzato jsou tyto výtky poměrně subjektivní a je nutno dodat, že kromě výše zmíněného není kódu celkem co vytknout.
+
+Šesté cvičení
+Šesté cvičení si vystačilo s minimálním množstvím kódu, který je poměrně přímočarý. Výstup se zdá být korektní dle zadání. Z mého pohledu, tedy osoby, která čte daný kód poprvé, je užitečné, že autorka okomentovala jednotlivé funkce a segmenty kódu. 
+Z hlediska kódu jako takového mám jediné výhrady k funkcím, které jsou volány pouze jednou a obsahují jen několik málo řádků, např. unpack_data či get_peaks. Jejich použití do jisté míry narušuje lineárnost kódu a není úplně snadné jej pochopit. Byť opět uznávám, že vyčleňují určitou specifikou funckionalitu z hlavního programu, a proto je z tohoto pohledu jejich použití nasnadě.
+Z hlediska optimalizace kódu nemám co vytknout. Nevšiml jsem žádných cyklů či jiných řídících struktur, které by bylo nutné nějakým způsobem optimalizovat. 
