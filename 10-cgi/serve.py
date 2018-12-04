@@ -7,6 +7,9 @@ from aiohttp import web
 import os
 import mailbox
 
+path_param = "/"
+cgi_param = ".cgi"
+
 
 class CgiRequestHandler:
 	def __init__(self, port, directory_path):
@@ -17,8 +20,8 @@ class CgiRequestHandler:
 		app = web.Application()
 		# resolve routing
 		# https://stackoverflow.com/questions/34565705/asyncio-and-aiohttp-route-all-urls-paths-to-handler?fbclid=IwAR17Pxyv6grD1csXTOzaLhAhyh2BC48A_3shZDXfWq4dXvNCf58VhHcVQcI
-		app.router.add_get("/{tail:.*}.cgi", self.handle_get)
-		app.router.add_post("/{tail:.*}.cgi", self.handle_post)
+		app.router.add_get("/{to_cgi:.*}.cgi{path_info:.*}", self.handle_get)
+		app.router.add_post("/{to_cgi:.*}.cgi{path_info:.*}", self.handle_post)
 		app.router.add_static("/", path=self.directory_path)
 		web.run_app(app, port=self.port)
 
@@ -60,10 +63,10 @@ class CgiRequestHandler:
 	@staticmethod
 	def get_file_path(request, dir_path):
 		absolute = dir_path.absolute()
-		relative = request.url.relative()
+		relative = request.match_info["to_cgi"]
 
 		if absolute is not None and relative is not None:
-			return pathlib.Path(str(absolute) + str(relative))
+			return pathlib.Path(str(absolute) + path_param + str(relative) + cgi_param)
 
 		return None
 
@@ -75,7 +78,7 @@ class CgiRequestHandler:
 		message_payload = response_message.payload
 
 		# if no content type header is returned, kill it and return 500
-		if message_headers is None:
+		if "Content-Type" not in message_headers.keys():
 			return web.Response(status=500)
 
 		response = web.Response(body=message_payload)
@@ -88,7 +91,7 @@ class CgiRequestHandler:
 		file_path = self.get_file_path(request, self.directory_path)
 
 		# https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
-		if not file_path.is_fifo() or file_path is None:
+		if file_path is None or not file_path.is_file() or request.match_info["path_info"] != "":
 			return web.Response(status=404)
 
 		# value must be string
@@ -103,10 +106,10 @@ class CgiRequestHandler:
 		file_path = self.get_file_path(request, self.directory_path)
 
 		# https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
-		if not file_path.is_fifo() or file_path is None:
+		if file_path is None or not file_path.is_file() or request.match_info["path_info"] != "":
 			return web.Response(status=404)
 
-		request_content = await request.read() if request.can_read_body() else None
+		request_content = await request.read() if request.can_read_body else None
 		# value must be string
 		cl_value = str(len(request_content)) if request_content is not None else str(0)
 		os.putenv("CONTENT_LENGTH", cl_value)
@@ -120,26 +123,24 @@ class CgiRequestHandler:
 
 		return self.handle_response(standard_output)
 
+
 	def set_request_meta_variables(self, request, file_path_url):
 		# init all the variables
 		# https://tools.ietf.org/html/rfc3875#section-4.1.1
 		# https://docs.python.org/3/library/os.html#os.putenv
 
-		at_value = request.headers.get("Authorization") if request.heades.get("Authorization") is not None else ""
-		os.putenv("AUTH_TYPE", at_value)
+		for header in request.headers.items():
+			os.putenv(header[0], header[1])
 
 		ct_value = request.content_type if request.content_type is not None else ""
 		os.putenv("CONTENT_TYPE", ct_value)
 
 		os.putenv('GATEWAY_INTERFACE', 'CGI/1.1')
-		# specifies a path to be interpreted by the CGI script
-		# the path is unquoted and may contains non valid URL characters
-		# TODO fix ^^
 
 		# path translated not being tested
 		# path info is the rest of the path after the cgi script
 		# do proper parsing
-		os.putenv('PATH_INFO', file_path_url.raw_path)
+		os.putenv('PATH_INFO', request.match_info["path_info"])
 		# os.putenv('PATH_TRANSLATED', file_path_url.path)
 		os.putenv('QUERY_STRING', request.query_string)
 		os.putenv('REMOTE_ADDR', '127.0.0.1')
