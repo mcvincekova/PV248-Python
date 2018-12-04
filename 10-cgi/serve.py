@@ -74,6 +74,10 @@ class CgiRequestHandler:
 		message_headers = response_message.headers
 		message_payload = response_message.payload
 
+		# if no content type header is returned, kill it and return 500
+		if message_headers is None:
+			return web.Response(status=500)
+
 		response = web.Response(body=message_payload)
 		response.headers.add("Content-Type", message_headers.get("Content-Type"))
 
@@ -131,8 +135,12 @@ class CgiRequestHandler:
 		# specifies a path to be interpreted by the CGI script
 		# the path is unquoted and may contains non valid URL characters
 		# TODO fix ^^
+
+		# path translated not being tested
+		# path info is the rest of the path after the cgi script
+		# do proper parsing
 		os.putenv('PATH_INFO', file_path_url.raw_path)
-		os.putenv('PATH_TRANSLATED', file_path_url.path)
+		# os.putenv('PATH_TRANSLATED', file_path_url.path)
 		os.putenv('QUERY_STRING', request.query_string)
 		os.putenv('REMOTE_ADDR', '127.0.0.1')
 		os.putenv('REQUEST_METHOD', request.method)
