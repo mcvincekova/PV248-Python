@@ -158,9 +158,9 @@ class CgiRequestHandler:
 		os.putenv('REQUEST_METHOD', request.method)
 
 		if path_param in request.match_info["to_cgi"]:
-			cn_value = request.match_info["to_cgi"].split(path_param)[-1]
+			cn_value = request.match_info["to_cgi"].split(path_param)[-1] + cgi_param
 		else:
-			cn_value = request.match_info["to_cgi"] + ".cgi"
+			cn_value = request.match_info["to_cgi"] + cgi_param
 
 		os.putenv('SCRIPT_NAME', cn_value)
 		os.putenv('SERVER_NAME', '127.0.0.1')
