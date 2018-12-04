@@ -8,6 +8,7 @@ import os
 import mailbox
 
 path_param = "/"
+anchor = "#"
 cgi_param = ".cgi"
 
 
@@ -74,15 +75,20 @@ class CgiRequestHandler:
 	def handle_response(std_out):
 		# https://docs.python.org/3.7/library/mailbox.html#message-objects
 		response_message = mailbox.Message(std_out)
-		message_headers = response_message.headers
-		message_payload = response_message.payload
+		message_headers = response_message._headers
+		message_payload = response_message._payload
 
 		# if no content type header is returned, kill it and return 500
-		if "Content-Type" not in message_headers.keys():
+		content_type = None
+		for header in message_headers:
+			if str(header[0]) == "Content-Type":
+				content_type = str(header[1])
+
+		if content_type is None:
 			return web.Response(status=500)
 
 		response = web.Response(body=message_payload)
-		response.headers.add("Content-Type", message_headers.get("Content-Type"))
+		response.headers.add("Content-Type", content_type)
 
 		return response
 
@@ -91,7 +97,10 @@ class CgiRequestHandler:
 		file_path = self.get_file_path(request, self.directory_path)
 
 		# https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
-		if file_path is None or not file_path.is_file() or request.match_info["path_info"] != "":
+		if file_path is None or not file_path.is_file():
+			return web.Response(status=404)
+		# handle path after .cgi
+		if request.match_info["path_info"] != "" and (not request.match_info["path_info"].startswith(path_param) or not request.match_info["path_info"].startswith(anchor)):
 			return web.Response(status=404)
 
 		# value must be string
@@ -106,7 +115,10 @@ class CgiRequestHandler:
 		file_path = self.get_file_path(request, self.directory_path)
 
 		# https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
-		if file_path is None or not file_path.is_file() or request.match_info["path_info"] != "":
+		if file_path is None or not file_path.is_file():
+			return web.Response(status=404)
+
+		if request.match_info["path_info"] != "" and (not request.match_info["path_info"].startswith(path_param) or not request.match_info["path_info"].startswith(anchor)):
 			return web.Response(status=404)
 
 		request_content = await request.read() if request.can_read_body else None
@@ -123,14 +135,13 @@ class CgiRequestHandler:
 
 		return self.handle_response(standard_output)
 
-
 	def set_request_meta_variables(self, request, file_path_url):
 		# init all the variables
 		# https://tools.ietf.org/html/rfc3875#section-4.1.1
 		# https://docs.python.org/3/library/os.html#os.putenv
 
 		for header in request.headers.items():
-			os.putenv(header[0], header[1])
+			os.putenv("HTTP_" + header[0], header[1])
 
 		ct_value = request.content_type if request.content_type is not None else ""
 		os.putenv("CONTENT_TYPE", ct_value)
@@ -145,11 +156,16 @@ class CgiRequestHandler:
 		os.putenv('QUERY_STRING', request.query_string)
 		os.putenv('REMOTE_ADDR', '127.0.0.1')
 		os.putenv('REQUEST_METHOD', request.method)
-		os.putenv('SCRIPT_NAME', str(file_path_url))
+
+		if path_param in request.match_info["to_cgi"]:
+			cn_value = request.match_info["to_cgi"].split(path_param)[-1]
+		cn_value = request.match_info["to_cgi"] + ".cgi"
+
+		os.putenv('SCRIPT_NAME', cn_value)
 		os.putenv('SERVER_NAME', '127.0.0.1')
 		os.putenv('SERVER_PORT', str(self.port))
 		os.putenv('SERVER_PROTOCOL', 'HTTP/1.1')
-		os.putenv('SERVER_SOFTWARE', 'aiohttp server')
+		os.putenv('SERVER_SOFTWARE', 'the server')
 		os.putenv('REMOTE_HOST', 'NULL')
 
 
