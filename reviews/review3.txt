@@ -1,6 +1,7 @@
-review od 410247 *0.5
+﻿review od 410247 *0.5
 
 /komentar/
+
 Z tohot review mam niekolko zaujimavych poznantkov:
 -> je zaujimave, ze v tomto review bola preferovana linearita kodu oproti niektoremu cleneniu na funkcie.
 Hoci osobne preferujem vyclenovat funkcionalitu do separatnych metod / funckii (aj ked vacsina mojich uloh tak nevyzera),

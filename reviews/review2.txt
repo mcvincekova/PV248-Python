@@ -1,12 +1,14 @@
 review od 479068 *0.5
 
 /komentar/
+
 Tieto ulohy mi presli, chcela som teda primarne pocut nazor na styl, ktorym su napisane.
 (pretoze z mojho subjektivneho hladiska patria medzi to najmenej priserne, co moje ulohy v tomto kurze ponukaju)
 Beriem si k srdcu predovsetkym dve poznamky: 
 -> zavadzajuce nazvy premennych a metod. Pri s5nom pohlade na ten kod je to pomerne zrejme
 -> priserne obalovanie funkcionality a posielanie parametra "cur" cez X funkcii, co zas a znova, je pri 
 ohliadnuti sa za tym kodom pomerne do oci bijuce
+
 /samotne review/
 
 

@@ -1,6 +1,7 @@
 ﻿review od 433556 *0.5
 
 /komentar/
+
 Vela dobre mienenych rad a postrehov.
 Pre mna velmi uzitocne review predovsetkym smerom k hw03, ktora je napisana priserne
 a bolo prinosne pozriet si, co vsetko by malo byt inak s pohladu dalsieho cloveka.
