@@ -100,7 +100,7 @@ class CgiRequestHandler:
 		if file_path is None or not file_path.is_file():
 			return web.Response(status=404)
 		# handle path after .cgi
-		if request.match_info["path_info"] != "" and (not request.match_info["path_info"].startswith(path_param) or not request.match_info["path_info"].startswith(anchor)):
+		if request.match_info["path_info"] != "" and (not request.match_info["path_info"].startswith(path_param) and not request.match_info["path_info"].startswith(anchor)):
 			return web.Response(status=404)
 
 		# value must be string
@@ -118,7 +118,7 @@ class CgiRequestHandler:
 		if file_path is None or not file_path.is_file():
 			return web.Response(status=404)
 
-		if request.match_info["path_info"] != "" and (not request.match_info["path_info"].startswith(path_param) or not request.match_info["path_info"].startswith(anchor)):
+		if request.match_info["path_info"] != "" and (not request.match_info["path_info"].startswith(path_param) and not request.match_info["path_info"].startswith(anchor)):
 			return web.Response(status=404)
 
 		request_content = await request.read() if request.can_read_body else None
@@ -159,7 +159,8 @@ class CgiRequestHandler:
 
 		if path_param in request.match_info["to_cgi"]:
 			cn_value = request.match_info["to_cgi"].split(path_param)[-1]
-		cn_value = request.match_info["to_cgi"] + ".cgi"
+		else:
+			cn_value = request.match_info["to_cgi"] + ".cgi"
 
 		os.putenv('SCRIPT_NAME', cn_value)
 		os.putenv('SERVER_NAME', '127.0.0.1')
