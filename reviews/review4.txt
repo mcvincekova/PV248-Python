@@ -1,0 +1,68 @@
+review od 475966 *0.5
+
+/komentar/
+
+-> uzitocne postrehy k funkcionalite uloh 2 a 9, ktore mi usli
+-> vysvetlenie vstupu alebo testu, na ktorom dana funkcionalita zlyhava je super, ulahcuje to opravu/testovanie
+-> tiez poukazanie na niekolko kusov duplicitneho kodu (na odstranenie ktoreho snad nebudem leniva)
+
+/samotne review/
+
+
+/*****************/
+/**** Uloha 2 ****/
+/*****************/
+Co sa tyka code stylu, tak sa snazis delit kod do metod. Niektore metody su celkom dlhe (napriklad format) ale vecinou mas kratke a vystizne pomenovane metody, takze v poriadku. Pouzivas dekorator `@staticmethod`, co sa mi paci, ja na to obcas zabudam.
+Nazov metody `number_in_string()` ma trochu zmiatol. Musela som pozriet do pouzitia co presne to robi :-)
+Zabudla si zrejme zavriet predany subor.
+
+Testy:
+Nie som si ista co vsetko specifikuje zadanie ale neratas s tym, ze v datume narodenia moze byt * (viz nizsie vstup 1).
+Co sa tyka polozky Partiture, tak ak v printe chyba davam do vypisu by default no. Na tom vypise samotnom asi az tak nezalezi ale ide o to co ukladas do objektu Print. Co som citala na fore tak to hlavne nema byt None, co tam prave ukladas takze na to by som si dala pozor.
+Zbytok testov mi preslo v poriadku.
+
+--------|
+Vstup 1:|
+--------|
+Print Number: 4
+Composer: Bach, Johan (*1555)
+Title: Christmass Oratorio
+Genre: cantata
+Key: C 
+Composition Year: 1728 
+Publication Year: 2004
+Edition: Barenreiter
+Editor: NewEditor
+Voice 1: g-d3, violin,  part
+Voice 2: C2-c, cello, part 
+Voice 3: c-e3, cis
+Partiture: no
+Incipit: treble 2/4 c4 d8 e8 |
+
+/*****************/
+/**** Uloha 4 ****/
+/*****************/
+Velmi pekne napisana uloha. Rozclenena nie len do funkcii ale aj do roznych modulov. Vyuzivas viacslovne pomenovania, co hodnotim kladne. Podla mna je lepsie namiesto komentarov pisat prave dlhsie pomenovania.
+
+Mozno by som sa vyhla jednopismenkovym pomenovaniam ako `for p in prints`.
+Zabudla si uzavriet spojemie s databazou (connector.close()).
+Cast skriptu `search.py` (104-113) a `getprint.py` (24-33) su rovnake, dali by sa nejako extrahovat mimo.
+Inak nemam moc co vytknut, popravde sa mi dost paci ako je tato uloha napisana.
+
+/*****************/
+/**** Uloha 9 ****/
+/*****************/
+V tejto ulohe som sa zanerala hlavne na testovanie, pretoze v tomto pripade to reviewer-ovi pomoze najviac.
+Co sa tyka code stylu, orientuje sa mi v nom celkom dobre. Kod mas rozcleneny do metod, nazvy premennych a metod davaju zmysel. Obcas by sa mozno hodila refaktorizacia (niektore metody su celkom dlhe) ale chapem, ze niektore ulohy robi clovek narychlo. Ostal ti tam zrejme riadok s debug vypisom (r 189). Ale pacia si mi niektore komentare (napr r 81 :-D ).
+Riadok 174 - namiesto komentara k defaultnej hodnote timeout by som volila nejaku tu konstantu, pri pripadnom neskorsom update kodu sa ti potom nestane, ze zabudnes zmenit kometar.
+Metody mas pomenovane pekne, cita sa to bez problemov. Kod sa ti nejako extra neopakuje, nemam moc co vytknut.
+
+Testy:
+
+POST - type POST - nezabudaj na to, ze kluc `content` a `url` su v tomto pripade povinne polozky. V pripade, ze url je spravna ale content zadane nie je nevracias {"code": "invalid json"}.
+POST - type GET - polozka url povinna je ale polozka content povinna nie je. V tomto pripade vracias invalid json ak chyba polozka content, co nie je spravne.
+Co sa tyke kluca `type`. Ten povinny nie je, by default je to GET. Tento test mi tiez nepresiel.
+
+Rekapitulacia: POST - POST - povinne su url, content. POST - GET - povinna je len url. Nic viac povinne nie je.
+
+Zbytok testov mi preslo v poriadku.
