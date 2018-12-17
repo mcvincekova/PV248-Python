@@ -59,7 +59,10 @@ class Print:
 			print("Edition: ")
 
 		if len(self.edition.authors) > 0:
-			print("Editor: " + ", ".join(self.edition.authors))
+			output_editors = []
+			for editor in self.edition.authors:
+				output_editors.append(editor.name)
+			print("Editor: " + ", ".join(output_editors))
 		else:
 			print("Editor: ")
 
@@ -209,7 +212,7 @@ class Composition:
 			year = re.findall(r"\d{4}", new_year)
 
 			if len(year) > 0:
-				return int(year[0])
+				return int(year[0].strip())
 
 		return None
 
@@ -317,7 +320,8 @@ class Person:
 					editors = [editors]
 
 			for editor in editors:
-				editors_list.append(editor.strip())
+				new_person = Person(editor.strip(), None, None)
+				editors_list.append(new_person)
 
 		return editors_list
 
@@ -376,6 +380,7 @@ def load(filename):
 		partiture = None
 
 		for s_line in section_lines:
+			s_line = s_line.strip()
 			if "Print Number:" in s_line:
 				print_id = Print.extract_id(s_line)
 			elif "Partiture:" in s_line:
