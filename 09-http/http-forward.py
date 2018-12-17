@@ -35,8 +35,12 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 
 	@staticmethod
 	def is_json_valid(request_body):
-		return request_body is not None and "url" in request_body and \
-		       (request_body["type"] == "POST" or "content" in request_body)
+		if request_body is None or "url" not in request_body:
+			return False
+		if request_body["type"] == "POST" and "content" not in request_body:
+			return False
+
+		return True
 
 	@staticmethod
 	def get_json(r_content):
@@ -155,6 +159,12 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 		r_data = self.rfile.read(c_length).decode("utf-8")
 		request_body = self.get_json(r_data)
 
+		# check for type
+		if request_body is not None or "type" not in request_body or request_body["type"] == "GET":
+			request_body["type"] = "GET"
+		else:
+			request_body["type"] = "POST"
+
 		# Check for invalid json, if so handle and end
 		if not self.is_json_valid(request_body):
 			self.send_code_and_headers(200)
@@ -162,12 +172,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 			self.wfile.write(bytes(json.dumps(output, indent=2, ensure_ascii=False), "utf-8"))
 			return
 
-		# Form request info
-		if request_body is not None and (request_body["type"] == "GET" or "type" not in request_body):
-			request_body["type"] = "GET"
-		else:
-			request_body["type"] = "POST"
-
+		# Form request info (except for the type -> DONE above)
 		request_url = request_body["url"]
 		request_headers = request_body["headers"] if "headers" in request_body else {}
 		# Default timeout is 1s
